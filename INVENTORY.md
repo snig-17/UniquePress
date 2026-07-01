@@ -10,12 +10,12 @@ no developer, no website upload. Changes appear within about **5 minutes**.
 
 The live sheet uses these column headings in **row 1** (any order):
 
-| Machine Type | Machine | Count | Colours |
-|--------------|---------|-------|---------|
-| Binding | HORIZON BQ 440 | 3 | |
-| Offset | FUJI 58 | 3 | 1 colour |
-| Cutting | NAGAI 72 Program Cutting | SOLD OUT | |
-| Label | SHIKI SL-220 | 1 | 4 colour |
+| Machine Type | Machine | Count | Colours | Clamp | Image Link |
+|--------------|---------|-------|---------|-------|------------|
+| Binding | HORIZON BQ 440 | 3 | | 4 clamp | |
+| Offset | FUJI 58 | 3 | 1 colour | | https://…/fuji58.jpg |
+| Cutting | NAGAI 72 Program Cutting | SOLD OUT | | | |
+| Label | SHIKI SL-220 | 1 | 4 colour | | |
 
 - **Machine** — the machine name (required). A row with no Machine is ignored.
 - **Machine Type** — used by the filter buttons (Binding, Offset, Cutting,
@@ -24,8 +24,27 @@ The live sheet uses these column headings in **row 1** (any order):
   and a new filter button appears.
 - **Count** — how many you have. A number (`1`, `3`) shows an **"In stock"**
   badge; typing **`SOLD OUT`** (or `0`) shows a grey **"Sold out"** badge.
-- **Colours** — optional; shows as the small grey line on the card
-  (e.g. `4 colour`). If left blank, the card shows the machine type instead.
+- **Colours** and **Clamp** — optional specs; both show on the small grey
+  line of the card (e.g. `4 colour`, `4 clamp`). If both are blank, the card
+  shows the machine type instead.
+- **Image Link** — optional photo of the machine. Paste a link to an image
+  and it fills the top of the card. **If blank, the card keeps the default
+  grey pattern** — so you can add photos gradually. See below for links that
+  work.
+
+### Getting an Image Link that works
+
+Easiest options:
+- **A direct image address** ending in `.jpg`/`.png` (e.g. from your website
+  or any image host) — paste it as-is.
+- **Google Drive**: upload the photo to Drive → right-click → **Share** →
+  set **"Anyone with the link"** → **Copy link** → paste it. The site
+  converts Drive share links automatically. *(The "Anyone with the link"
+  step is essential, or the photo won't show.)*
+- **Dropbox** share links also work.
+
+Landscape photos look best (they're shown in a wide 16:10 frame, cropped to
+fit).
 
 ## Common tasks
 

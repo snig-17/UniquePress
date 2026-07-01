@@ -23,6 +23,8 @@ var SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1IwtUcges
 var COLUMNS = {
   name:     ["name", "machine", "model"],
   details:  ["details", "spec", "description", "specification", "colours", "colors"],
+  clamp:    ["clamp", "clamps"],
+  image:    ["image link", "image", "image url", "photo", "picture", "img"],
   category: ["category", "categories", "type", "machine type"],
   status:   ["status", "tag", "availability", "count"]
 };
@@ -65,6 +67,21 @@ function normalizeStatus(raw) {
   if (/sold\s*out|out of stock|^out$/i.test(s)) return "Sold out";
   if (/^\d+(\.\d+)?$/.test(s)) return Number(s) > 0 ? "In stock" : "Sold out";
   return s || "In stock";
+}
+
+/* Turn whatever image link the client pastes into something an <img> can
+   actually load. Google Drive "share" links don't embed directly, so we
+   rewrite them to Drive's thumbnail endpoint; Dropbox share links become
+   raw; everything else (a direct image URL) passes through unchanged. */
+function normalizeImageUrl(url) {
+  var u = String(url == null ? "" : url).trim();
+  if (!u) return "";
+  if (/drive\.google\.com/.test(u)) {
+    var m = u.match(/\/file\/d\/([-\w]{20,})/) || u.match(/[?&]id=([-\w]{20,})/);
+    if (m) return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1000";
+  }
+  if (/dropbox\.com/.test(u)) return u.replace(/([?&])dl=0/, "$1raw=1");
+  return u;
 }
 
 function splitCategories(value) {
@@ -114,6 +131,8 @@ function rowsToMachines(rows) {
   var idx = {
     name: idxFor(COLUMNS.name),
     details: idxFor(COLUMNS.details),
+    clamp: idxFor(COLUMNS.clamp),
+    image: idxFor(COLUMNS.image),
     category: idxFor(COLUMNS.category),
     status: idxFor(COLUMNS.status)
   };
@@ -123,12 +142,16 @@ function rowsToMachines(rows) {
     var name = idx.name !== -1 ? (cells[idx.name] || "").trim() : "";
     if (!name) continue; // skip blank rows
     var category = idx.category !== -1 ? (cells[idx.category] || "").trim() : "";
-    var details = idx.details !== -1 ? (cells[idx.details] || "").trim() : "";
+    var colours = idx.details !== -1 ? (cells[idx.details] || "").trim() : "";
+    var clamp = idx.clamp !== -1 ? (cells[idx.clamp] || "").trim() : "";
+    // Build the grey detail line from whatever spec columns are filled.
+    var details = [colours, clamp].filter(Boolean).join(" · ");
     if (!details) details = category; // fall back so the card isn't sparse
     out.push({
       name: name,
       details: details,
       category: category,
+      image: normalizeImageUrl(idx.image !== -1 ? cells[idx.image] : ""),
       status: normalizeStatus(idx.status !== -1 ? cells[idx.status] : "")
     });
   }
@@ -194,10 +217,16 @@ function renderCards() {
   var list = state.machines.filter(function (m) { return machineMatches(m, state.cat); });
 
   host.innerHTML = list.map(function (m) {
+    var img = m.image
+      ? '<img src="' + escapeHtml(m.image) + '" alt="' + escapeHtml(m.name) +
+        '" loading="lazy" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;" ' +
+        'onerror="this.style.display=\'none\'">'
+      : "";
     return '' +
       '<div style="border:1px solid #e8e8e4; border-radius:12px; overflow:hidden; background:#fff;" style-hover="box-shadow:0 20px 44px -28px rgba(20,20,15,.4);">' +
-        '<div style="aspect-ratio:16/10; background:repeating-linear-gradient(135deg,#ededea,#ededea 9px,#f6f6f3 9px,#f6f6f3 18px); display:flex; align-items:flex-start; padding:12px;">' +
-          '<span style="' + badgeStyle(m.status) + '">' + escapeHtml(m.status || "In stock") + "</span>" +
+        '<div style="position:relative; aspect-ratio:16/10; overflow:hidden; background:repeating-linear-gradient(135deg,#ededea,#ededea 9px,#f6f6f3 9px,#f6f6f3 18px);">' +
+          img +
+          '<span style="position:absolute; top:12px; left:12px; ' + badgeStyle(m.status) + '">' + escapeHtml(m.status || "In stock") + "</span>" +
         "</div>" +
         '<div style="padding:18px 20px;">' +
           '<div style="font-family:\'Space Grotesk\',sans-serif; font-weight:600; font-size:17px; color:#1a1a18; margin-bottom:3px;">' + escapeHtml(m.name) + "</div>" +
