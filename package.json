@@ -5,6 +5,11 @@
   "description": "UniquePress static site — deploys to Cloudflare Pages.",
   "scripts": {
     "dev": "npx serve public",
-    "start": "npx serve public"
+    "start": "npx serve public",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.106.0"
   }
 }
