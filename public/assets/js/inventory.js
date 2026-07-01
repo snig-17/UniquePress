@@ -5,9 +5,9 @@
    The "Machines available now" cards and the category filter chips are
    built from a Google Sheet the client maintains. On every page load the
    site fetches the latest sheet, so updating stock = editing the sheet
-   (no code, no redeploy). If the sheet URL is blank or unreachable, the
-   built-in STARTER_MACHINES below are shown instead, so the site is never
-   empty.
+   (no code, no redeploy). If the sheet is ever unreachable, the section
+   simply shows a short "tell us what you need" message rather than any
+   placeholder stock.
 
    >>> TO CONNECT THE SHEET (one-time):
    In Google Sheets: File → Share → Publish to web → choose the sheet tab
@@ -28,28 +28,6 @@ var COLUMNS = {
   category: ["category", "categories", "type", "machine type"],
   status:   ["status", "tag", "availability", "count"]
 };
-
-/* Shown when the sheet is blank/unreachable — also the starter rows the
-   client can copy into their sheet to begin. */
-var STARTER_MACHINES = [
-  { name: "Komori Lithrone L432",    details: "4-colour offset · 2006",       category: "Offset printing", status: "In stock" },
-  { name: "Ryobi 755",               details: "5-colour offset · 2008",       category: "Offset printing", status: "In stock" },
-  { name: "Mitsubishi Diamond 3000", details: "4-colour offset · 2005",       category: "Offset printing", status: "In stock" },
-  { name: "Shinohara 66-IV",         details: "4-colour offset · 2003",       category: "Offset printing", status: "In stock" },
-  { name: "Sakurai Oliver 466SD",    details: "4-colour offset · 2004",       category: "Offset printing", status: "In stock" },
-  { name: "Heidelberg SM 74-4",      details: "4-colour offset · 2003",       category: "Offset printing", status: "In stock" },
-  { name: "Fuji 52-E",               details: "2-colour offset",              category: "Offset printing", status: "In stock" },
-  { name: "Hamada RS 34",            details: "Baby offset · 2-colour · 2001", category: "Baby offset",     status: "In stock" },
-  { name: "Ryobi 3302",              details: "Baby offset · 2-colour",       category: "Baby offset",     status: "In stock" },
-  { name: "Itotec SA-72",            details: "Programmable cutter · 72cm",    category: "Cutting, Post-press", status: "In stock" },
-  { name: "Horizon BQ-470",          details: "Perfect binder · 4-clamp",     category: "Binding, Post-press", status: "In stock" },
-  { name: "Shoei SB-8",              details: "Saddle stitcher · wire",       category: "Binding, Post-press", status: "In stock" },
-  { name: "PBM 3000",                details: "Perfect binder",               category: "Binding, Post-press", status: "In stock" },
-  { name: "Horizon AFC-544",         details: "Buckle folder · automatic",    category: "Folding, Post-press", status: "In stock" },
-  { name: "Iwasaki TR-100",          details: "Rotary label press",           category: "Label",           status: "In stock" },
-  { name: "Shiki LT-250",            details: "Label printing press",         category: "Label",           status: "In stock" },
-  { name: "PBM Paper Counter",       details: "Sheet counting & tabbing",     category: "Counting machine, Post-press", status: "In stock" }
-];
 
 /* ---------------- helpers ---------------- */
 
@@ -252,7 +230,7 @@ function render() {
 
 function loadInventory() {
   if (!SHEET_CSV_URL) {
-    state.machines = STARTER_MACHINES.slice();
+    state.machines = [];
     render();
     return;
   }
@@ -261,13 +239,12 @@ function loadInventory() {
   fetch(url, { cache: "no-store" })
     .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.text(); })
     .then(function (text) {
-      var machines = rowsToMachines(parseCSV(text));
-      state.machines = machines.length ? machines : STARTER_MACHINES.slice();
+      state.machines = rowsToMachines(parseCSV(text));
       render();
     })
     .catch(function () {
-      // Network/permission problem — fall back so the section still shows.
-      state.machines = STARTER_MACHINES.slice();
+      // Network/permission problem — show the empty-state message, not stale stock.
+      state.machines = [];
       render();
     });
 }
