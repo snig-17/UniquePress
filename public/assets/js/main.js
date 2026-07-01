@@ -73,8 +73,9 @@ window.UP = window.UP || {};
     var name = brand[0], file = brand[1];
     var wrap = 'margin-right:56px; display:inline-flex; align-items:center; height:44px;';
     if (file) {
+      // Sizing/greyscale handled by #up-reel img in styles.css so all logos stay uniform.
       return '<span style="' + wrap + '"><img src="/assets/img/logos/' + file +
-        '" alt="' + name + '" style="height:28px; width:auto; display:block;" ' +
+        '" alt="' + name + '" ' +
         'onerror="this.replaceWith(document.createTextNode(\'' + name + '\'))"></span>';
     }
     return '<span style="' + wrap + '">' + name + "</span>";

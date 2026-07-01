@@ -6,6 +6,19 @@
    Hover/focus states are handled by /assets/js/main.js.
    ------------------------------------------------------------------ */
 
+/* Brand reel — make mismatched brand logos read as one uniform muted strip
+   (consistent height, greyscale + low opacity), full colour when the reel
+   is hovered (it also pauses on hover). */
+#up-reel img {
+  height: 30px;          /* uniform height, like the Claude design */
+  width: auto;
+  display: block;
+  filter: grayscale(1);
+  opacity: 0.55;
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+#up-reel:hover img { filter: none; opacity: 1; }
+
 /* Tablet — drop dense grids down a column */
 @media (max-width: 900px) {
   .u-3 { grid-template-columns: repeat(2, 1fr) !important; }
