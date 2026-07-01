@@ -10,14 +10,10 @@
    (consistent height, greyscale + low opacity), full colour when the reel
    is hovered (it also pauses on hover). */
 #up-reel img {
-  height: 30px;          /* uniform height, like the Claude design */
+  height: 30px;   /* uniform height across all brand logos (full colour) */
   width: auto;
   display: block;
-  filter: grayscale(1);
-  opacity: 0.55;
-  transition: filter 0.25s ease, opacity 0.25s ease;
 }
-#up-reel:hover img { filter: none; opacity: 1; }
 
 /* Tablet — drop dense grids down a column */
 @media (max-width: 900px) {
