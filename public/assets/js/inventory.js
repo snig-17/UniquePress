@@ -15,15 +15,16 @@
    it between the quotes below.
    ================================================================== */
 
-var SHEET_CSV_URL = ""; // <-- paste the published CSV link here
+var SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT1IwtUcges20SBQOIWfnxqUbNEKrw8OhTuqmgYEByKpqAmdYDmOzpilFsaPvSpnEMiduUbenH5bO9w/pub?output=csv";
 
-/* Column headers the sheet should use (case-insensitive). Order in the
-   sheet doesn't matter; these names do. See INVENTORY.md for the guide. */
+/* Column headers the sheet may use (case-insensitive, exact match). Order
+   in the sheet doesn't matter; these names do. The client's live sheet uses
+   "Machine Type / Machine / Count / Colours", all covered below. */
 var COLUMNS = {
   name:     ["name", "machine", "model"],
-  details:  ["details", "spec", "description", "specification"],
-  category: ["category", "categories", "type"],
-  status:   ["status", "tag", "availability"]
+  details:  ["details", "spec", "description", "specification", "colours", "colors"],
+  category: ["category", "categories", "type", "machine type"],
+  status:   ["status", "tag", "availability", "count"]
 };
 
 /* Shown when the sheet is blank/unreachable — also the starter rows the
@@ -54,6 +55,16 @@ function escapeHtml(s) {
   return String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+/* Turn a raw Status/Count cell into a badge label.
+   "SOLD OUT" (or 0) -> "Sold out"; a positive number -> "In stock";
+   a word like "Serviced" is kept as-is; blank -> "In stock". */
+function normalizeStatus(raw) {
+  var s = String(raw == null ? "" : raw).trim();
+  if (/sold\s*out|out of stock|^out$/i.test(s)) return "Sold out";
+  if (/^\d+(\.\d+)?$/.test(s)) return Number(s) > 0 ? "In stock" : "Sold out";
+  return s || "In stock";
 }
 
 function splitCategories(value) {
@@ -111,11 +122,14 @@ function rowsToMachines(rows) {
     var cells = rows[r];
     var name = idx.name !== -1 ? (cells[idx.name] || "").trim() : "";
     if (!name) continue; // skip blank rows
+    var category = idx.category !== -1 ? (cells[idx.category] || "").trim() : "";
+    var details = idx.details !== -1 ? (cells[idx.details] || "").trim() : "";
+    if (!details) details = category; // fall back so the card isn't sparse
     out.push({
       name: name,
-      details: idx.details !== -1 ? (cells[idx.details] || "").trim() : "",
-      category: idx.category !== -1 ? (cells[idx.category] || "").trim() : "",
-      status: idx.status !== -1 ? (cells[idx.status] || "").trim() : "In stock"
+      details: details,
+      category: category,
+      status: normalizeStatus(idx.status !== -1 ? cells[idx.status] : "")
     });
   }
   return out;
