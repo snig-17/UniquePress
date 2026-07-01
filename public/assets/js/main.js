@@ -34,7 +34,33 @@ window.UP = window.UP || {};
     });
   };
 
-  function init() { window.UP.wireStates(document); }
+  /* Enquiry form -> WhatsApp. No backend: the form fields are composed into
+     a pre-filled WhatsApp message so the visitor just reviews and hits send. */
+  var WHATSAPP_NUMBER = "919842145579"; // country code + number, no + or spaces
+
+  function wireEnquiryForm() {
+    var form = document.getElementById("up-enquiry-form");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      function val(id) {
+        var el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      }
+      var lines = ["Hi Unique Press, I'd like to enquire."];
+      if (val("up-name"))    lines.push("Name: " + val("up-name"));
+      if (val("up-phone"))   lines.push("Phone: " + val("up-phone"));
+      if (val("up-machine")) lines.push("Machine: " + val("up-machine"));
+      if (val("up-msg"))     lines.push("Message: " + val("up-msg"));
+      var url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n"));
+      window.open(url, "_blank", "noopener");
+    });
+  }
+
+  function init() {
+    window.UP.wireStates(document);
+    wireEnquiryForm();
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
