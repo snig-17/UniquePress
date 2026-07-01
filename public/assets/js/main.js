@@ -57,9 +57,40 @@ window.UP = window.UP || {};
     });
   }
 
+  /* Brand reel: build from a [name, logoFile] list. A logo renders as an
+     <img>; a brand with no logo (or a broken image) falls back to its name
+     as text. The sequence is duplicated once for a seamless -50% loop. */
+  var BRANDS = [
+    ["Komori", "komori-n.png"], ["Ryobi", "ryobi-n.png"], ["Mitsubishi", "mitsubishi-n.png"],
+    ["Shinohara", "shinohara-n.png"], ["Sakurai", "sakurai-n.png"], ["Heidelberg", "heidelberg-n.png"],
+    ["Fuji", "fuji-n.png"], ["Shiki", "shiki-n.png"], ["Iwasaki", "iwasaki-n.png"],
+    ["PBM", "pbm-n.png"], ["Horizon", "horizon-n.png"], ["Shoei", "shoei-n.png"],
+    ["Itoh", "itoh-n.png"], ["Polar", null], ["JMC Katsuda", "jmc-katsuda-n.png"],
+    ["Yoda", "yoda-n.png"], ["Uchida", "uchida-n.png"]
+  ];
+
+  function reelItem(brand) {
+    var name = brand[0], file = brand[1];
+    var wrap = 'margin-right:56px; display:inline-flex; align-items:center; height:44px;';
+    if (file) {
+      return '<span style="' + wrap + '"><img src="/assets/img/logos/' + file +
+        '" alt="' + name + '" style="height:28px; width:auto; display:block;" ' +
+        'onerror="this.replaceWith(document.createTextNode(\'' + name + '\'))"></span>';
+    }
+    return '<span style="' + wrap + '">' + name + "</span>";
+  }
+
+  function buildReel() {
+    var host = document.getElementById("up-reel");
+    if (!host) return;
+    var seq = BRANDS.map(reelItem).join("");
+    host.innerHTML = seq + seq;
+  }
+
   function init() {
     window.UP.wireStates(document);
     wireEnquiryForm();
+    buildReel();
   }
 
   if (document.readyState === "loading") {
