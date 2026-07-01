@@ -54,6 +54,9 @@ function normalizeStatus(raw) {
 function normalizeImageUrl(url) {
   var u = String(url == null ? "" : url).trim();
   if (!u) return "";
+  // Google Photos share links point to a viewer PAGE, not an image file, so
+  // they can never render. Ignore them outright -> card keeps the grey pattern.
+  if (/photos\.app\.goo\.gl|photos\.google\.com/.test(u)) return "";
   if (/drive\.google\.com/.test(u)) {
     var m = u.match(/\/file\/d\/([-\w]{20,})/) || u.match(/[?&]id=([-\w]{20,})/);
     if (m) return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1000";
