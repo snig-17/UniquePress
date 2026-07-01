@@ -34,14 +34,21 @@ The live sheet uses these column headings in **row 1** (any order):
 
 ### Getting an Image Link that works
 
-Easiest options:
+**Recommended — Google Drive:** upload the photo to Drive → right-click →
+**Share** → set **"Anyone with the link"** → **Copy link** → paste it. The
+site converts Drive share links automatically. *(The "Anyone with the link"
+step is essential, or the photo won't show.)*
+
+Also fine:
 - **A direct image address** ending in `.jpg`/`.png` (e.g. from your website
   or any image host) — paste it as-is.
-- **Google Drive**: upload the photo to Drive → right-click → **Share** →
-  set **"Anyone with the link"** → **Copy link** → paste it. The site
-  converts Drive share links automatically. *(The "Anyone with the link"
-  step is essential, or the photo won't show.)*
-- **Dropbox** share links also work.
+- **Dropbox** share links.
+
+> ⚠️ **Google Photos links do NOT work.** A link that looks like
+> `https://photos.app.goo.gl/…` or `photos.google.com/share/…` points to a
+> photo *viewer page*, not an image file, so it can't be shown on the site.
+> Put the photo in **Google Drive** instead (steps above). Cards with an
+> unusable link just fall back to the plain grey pattern — nothing breaks.
 
 Landscape photos look best (they're shown in a wide 16:10 frame, cropped to
 fit).
