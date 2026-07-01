@@ -1,0 +1,10 @@
+{
+  "name": "uniquepress",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UniquePress static site — deploys to Cloudflare Pages.",
+  "scripts": {
+    "dev": "npx serve public",
+    "start": "npx serve public"
+  }
+}
