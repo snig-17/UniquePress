@@ -59,7 +59,10 @@ function normalizeImageUrl(url) {
   if (/photos\.app\.goo\.gl|photos\.google\.com/.test(u)) return "";
   if (/drive\.google\.com/.test(u)) {
     var m = u.match(/\/file\/d\/([-\w]{20,})/) || u.match(/[?&]id=([-\w]{20,})/);
-    if (m) return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1000";
+    // Use the lh3 image CDN, not drive.google.com/thumbnail — the thumbnail
+    // endpoint is rate-limited (429s) when hit with a page referrer, so it
+    // fails to render in the browser. lh3 serves the file directly.
+    if (m) return "https://lh3.googleusercontent.com/d/" + m[1] + "=w1000";
   }
   if (/dropbox\.com/.test(u)) return u.replace(/([?&])dl=0/, "$1raw=1");
   return u;
@@ -200,7 +203,8 @@ function renderCards() {
   host.innerHTML = list.map(function (m) {
     var img = m.image
       ? '<img src="' + escapeHtml(m.image) + '" alt="' + escapeHtml(m.name) +
-        '" loading="lazy" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;" ' +
+        '" loading="lazy" referrerpolicy="no-referrer" ' +
+        'style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;" ' +
         'onerror="this.style.display=\'none\'">'
       : "";
     return '' +

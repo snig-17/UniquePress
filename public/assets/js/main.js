@@ -62,11 +62,10 @@ window.UP = window.UP || {};
      as text. The sequence is duplicated once for a seamless -50% loop. */
   var BRANDS = [
     ["Komori", "komori-n.png"], ["Ryobi", "ryobi-n.png"], ["Mitsubishi", "mitsubishi-n.png"],
-    ["Shinohara", "shinohara-n.png"], ["Sakurai", "sakurai-n.png"], ["Heidelberg", "heidelberg-n.png"],
-    ["Fuji", "fuji-n.png"], ["Shiki", "shiki-n.png"], ["Iwasaki", "iwasaki-n.png"],
-    ["PBM", "pbm-n.png"], ["Horizon", "horizon-n.png"], ["Shoei", "shoei-n.png"],
-    ["Itoh", "itoh-n.png"], ["Polar", null], ["JMC Katsuda", "jmc-katsuda-n.png"],
-    ["Yoda", "yoda-n.png"], ["Uchida", "uchida-n.png"]
+    ["Shinohara", "shinohara-n.png"], ["Sakurai", "sakurai-n.png"], ["Shiki", "shiki-n.png"],
+    ["Iwasaki", "iwasaki-n.png"], ["PBM", "pbm-n.png"], ["Horizon", "horizon-n.png"],
+    ["Shoei", "shoei-n.png"], ["Itoh", "itoh-n.png"], ["Polar", "polar-n.png"],
+    ["JMC Katsuda", "jmc-katsuda-n.png"], ["Yoda", "yoda-n.png"], ["Uchida", "uchida-n.png"]
   ];
 
   function reelItem(brand) {
