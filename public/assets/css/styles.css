@@ -10,10 +10,18 @@
    (consistent height, greyscale + low opacity), full colour when the reel
    is hovered (it also pauses on hover). */
 #up-reel img {
-  height: 30px;   /* uniform height across all brand logos (full colour) */
+  height: 30px;   /* baseline height for wide wordmark logos */
   width: auto;
   display: block;
 }
+
+/* Optical sizing: near-square / circular logos need a taller height than the
+   wide wordmarks to read at the same visual size across the strip. */
+#up-reel img[alt="Polar"] { height: 48px; }
+#up-reel img[alt="PBM"]   { height: 46px; }
+#up-reel img[alt="Ryobi"] { height: 42px; }
+#up-reel img[alt="Shiki"] { height: 36px; }
+#up-reel img[alt="Yoda"]  { height: 36px; }
 
 /* Tablet — drop dense grids down a column */
 @media (max-width: 900px) {

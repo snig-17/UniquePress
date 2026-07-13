@@ -70,7 +70,7 @@ window.UP = window.UP || {};
 
   function reelItem(brand) {
     var name = brand[0], file = brand[1];
-    var wrap = 'margin-right:56px; display:inline-flex; align-items:center; height:44px;';
+    var wrap = 'margin-right:56px; display:inline-flex; align-items:center; height:52px;';
     if (file) {
       // Sizing/greyscale handled by #up-reel img in styles.css so all logos stay uniform.
       return '<span style="' + wrap + '"><img src="/assets/img/logos/' + file +
