@@ -10,12 +10,12 @@ no developer, no website upload. Changes appear within about **5 minutes**.
 
 The live sheet uses these column headings in **row 1** (any order):
 
-| Machine Type | Machine | Count | Colours | Clamp | Image Link |
-|--------------|---------|-------|---------|-------|------------|
-| Binding | HORIZON BQ 440 | 3 | | 4 clamp | |
-| Offset | FUJI 58 | 3 | 1 colour | | https://…/fuji58.jpg |
-| Cutting | NAGAI 72 Program Cutting | SOLD OUT | | | |
-| Label | SHIKI SL-220 | 1 | 4 colour | | |
+| Machine Type | Machine | Count | Colours | Clamp | Image Link | Specs |
+|--------------|---------|-------|---------|-------|------------|-------|
+| Binding | HORIZON BQ 440 | 3 | | 4 clamp | | Year: 2015⏎Max speed: 1,350 books/hr |
+| Offset | FUJI 58 | 3 | 1 colour | | https://…/fuji58.jpg | Sheet size: 58 cm⏎Condition: excellent |
+| Cutting | NAGAI 72 Program Cutting | SOLD OUT | | | | |
+| Label | SHIKI SL-220 | 1 | 4 colour | | | |
 
 - **Machine** — the machine name (required). A row with no Machine is ignored.
 - **Machine Type** — used by the filter buttons (Binding, Offset, Cutting,
@@ -31,6 +31,14 @@ The live sheet uses these column headings in **row 1** (any order):
   and it fills the top of the card. **If blank, the card keeps the default
   grey pattern** — so you can add photos gradually. See below for links that
   work.
+- **Specs** — optional full specifications/details. Write whatever you like,
+  one detail per line (press **Alt+Enter** inside a cell for a new line),
+  e.g. `Year: 2015`, `Sheet size: 58 cm`, `Condition: excellent`. When a
+  machine has Specs, its card shows a **"View specs ▾"** link and the visitor
+  can **click the card to expand** and read them. **If blank, the card has no
+  expand link** — so, like photos, you can fill specs in gradually. The
+  column can also be named `Specifications`, `Full specs`, `Spec sheet`, or
+  `More info` — all work.
 
 ### Getting an Image Link that works
 

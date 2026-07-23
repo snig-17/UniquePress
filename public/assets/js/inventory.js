@@ -26,7 +26,10 @@ var COLUMNS = {
   clamp:    ["clamp", "clamps"],
   image:    ["image link", "image", "image url", "photo", "picture", "img"],
   category: ["category", "categories", "type", "machine type"],
-  status:   ["status", "tag", "availability", "count"]
+  status:   ["status", "tag", "availability", "count"],
+  // Full free-text specs shown in the click-to-expand panel. Kept distinct
+  // from the short grey "details" line (which comes from the Colours column).
+  specs:    ["specs", "specifications", "full specs", "spec sheet", "more info"]
 };
 
 /* ---------------- helpers ---------------- */
@@ -118,7 +121,8 @@ function rowsToMachines(rows) {
     clamp: idxFor(COLUMNS.clamp),
     image: idxFor(COLUMNS.image),
     category: idxFor(COLUMNS.category),
-    status: idxFor(COLUMNS.status)
+    status: idxFor(COLUMNS.status),
+    specs: idxFor(COLUMNS.specs)
   };
   var out = [];
   for (var r = 1; r < rows.length; r++) {
@@ -135,6 +139,7 @@ function rowsToMachines(rows) {
       name: name,
       details: details,
       category: category,
+      specs: idx.specs !== -1 ? (cells[idx.specs] || "").trim() : "",
       image: normalizeImageUrl(idx.image !== -1 ? cells[idx.image] : ""),
       status: normalizeStatus(idx.status !== -1 ? cells[idx.status] : "")
     });
@@ -207,18 +212,32 @@ function renderCards() {
         'style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover;" ' +
         'onerror="this.style.display=\'none\'">'
       : "";
+    var hasSpecs = !!m.specs;
+    // Only cards with specs get the clickable affordance + hidden panel.
+    var toggle = hasSpecs
+      ? '<div class="up-specs-toggle" style="font-size:13px; color:var(--accent,#1f3a5f); font-weight:600; margin-bottom:14px; user-select:none;">View specs ▾</div>'
+      : "";
+    var panel = hasSpecs
+      ? '<div class="up-specs-panel" style="display:none; white-space:pre-line; font-size:13px; line-height:1.55; color:#55554f; ' +
+        'border-top:1px solid #f0f0ec; padding-top:12px; margin-bottom:14px;">' + escapeHtml(m.specs) + "</div>"
+      : "";
+    var cardAttrs = hasSpecs
+      ? ' class="up-card" style="border:1px solid #e8e8e4; border-radius:12px; overflow:hidden; background:#fff; cursor:pointer;"'
+      : ' style="border:1px solid #e8e8e4; border-radius:12px; overflow:hidden; background:#fff;"';
     return '' +
-      '<div style="border:1px solid #e8e8e4; border-radius:12px; overflow:hidden; background:#fff;" style-hover="box-shadow:0 20px 44px -28px rgba(20,20,15,.4);">' +
+      '<div' + cardAttrs + ' style-hover="box-shadow:0 20px 44px -28px rgba(20,20,15,.4);">' +
         '<div style="position:relative; aspect-ratio:16/10; overflow:hidden; background:repeating-linear-gradient(135deg,#ededea,#ededea 9px,#f6f6f3 9px,#f6f6f3 18px);">' +
           img +
           '<span style="position:absolute; top:12px; left:12px; ' + badgeStyle(m.status) + '">' + escapeHtml(m.status || "In stock") + "</span>" +
         "</div>" +
         '<div style="padding:18px 20px;">' +
           '<div style="font-family:\'Space Grotesk\',sans-serif; font-weight:600; font-size:17px; color:#1a1a18; margin-bottom:3px;">' + escapeHtml(m.name) + "</div>" +
-          '<div style="font-size:13px; color:#7a7a74; margin-bottom:14px;">' + escapeHtml(m.details) + "</div>" +
+          '<div style="font-size:13px; color:#7a7a74; margin-bottom:' + (hasSpecs ? "8px" : "14px") + ';">' + escapeHtml(m.details) + "</div>" +
+          toggle +
+          panel +
           '<div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid #f0f0ec; padding-top:12px;">' +
             '<span style="font-size:13px; color:#6a6a64;">Price on request</span>' +
-            '<a href="#contact" style="font-size:13px; color:var(--accent,#1f3a5f); font-weight:600;">Enquire →</a>' +
+            '<a href="#contact" class="up-enquire" style="font-size:13px; color:var(--accent,#1f3a5f); font-weight:600;">Enquire →</a>' +
           "</div>" +
         "</div>" +
       "</div>";
@@ -226,9 +245,39 @@ function renderCards() {
 
   if (empty) empty.style.display = list.length ? "none" : "block";
 
+  wireSpecsToggles(host);
+
   // Re-apply hover states to the freshly rendered cards.
   if (window.UP && window.UP.wireStates) window.UP.wireStates(host);
 }
+
+/* Wire click-to-expand on cards that have a specs panel. Clicking anywhere
+   on the card toggles its panel; the Enquire link is exempt so it still
+   navigates. Esc collapses whichever card is open (wired once, below). */
+function wireSpecsToggles(host) {
+  host.querySelectorAll(".up-card").forEach(function (card) {
+    card.addEventListener("click", function (e) {
+      if (e.target.closest(".up-enquire")) return; // let the link do its thing
+      toggleCard(card);
+    });
+  });
+}
+
+function toggleCard(card) {
+  var panel = card.querySelector(".up-specs-panel");
+  var toggle = card.querySelector(".up-specs-toggle");
+  if (!panel) return;
+  var open = panel.style.display !== "none";
+  panel.style.display = open ? "none" : "block";
+  if (toggle) toggle.textContent = open ? "View specs ▾" : "Hide specs ▴";
+}
+
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Escape") return;
+  document.querySelectorAll(".up-card .up-specs-panel").forEach(function (panel) {
+    if (panel.style.display !== "none") toggleCard(panel.closest(".up-card"));
+  });
+});
 
 function render() {
   renderChips();
