@@ -29,7 +29,11 @@ var COLUMNS = {
   status:   ["status", "tag", "availability", "count"],
   // Full free-text specs shown in the click-to-expand panel. Kept distinct
   // from the short grey "details" line (which comes from the Colours column).
-  specs:    ["specs", "specifications", "full specs", "spec sheet", "more info"]
+  // "details & specifications" is the exact heading the client's live sheet
+  // uses, so it's matched here rather than asking them to rename the column.
+  specs:    ["details & specifications", "details and specifications",
+             "details/specifications", "specs", "specifications",
+             "full specs", "spec sheet", "more info"]
 };
 
 /* ---------------- helpers ---------------- */
